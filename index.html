@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هتحبيني ولا لا</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            overflow: hidden;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .main-container {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            max-width: 90%;
+            width: 420px;
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+
+        h1 {
+            color: #d63031;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+
+        .image-container {
+            position: relative;
+        }
+
+        .image-container img {
+            width: 100%;
+            max-width: 280px;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.4s ease;
+            display: inline-block;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.03);
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 35px;
+            height: 60px;
+            align-items: center;
+        }
+
+        button {
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: white;
+            outline: none;
+            z-index: 100;
+        }
+
+        #btn-yes {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+        }
+        
+        #btn-yes:hover {
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.5);
+            transform: translateY(-3px);
+        }
+
+        #btn-no {
+            background: linear-gradient(135deg, #d63031, #ff7675);
+            position: relative;
+        }
+
+        /* Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            z-index: 1000;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .popup-content {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            transform: scale(0.7);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%;
+            width: 380px;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-content h2 {
+            color: #2d3436;
+            margin-bottom: 25px;
+            font-size: 1.7rem;
+        }
+
+        .popup-content img {
+            width: 100%;
+            max-width: 250px;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            button { padding: 12px 30px; font-size: 1.1rem; }
+            .popup-content h2 { font-size: 1.4rem; }
+            .main-container { padding: 30px 20px; width: 95%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="main-container" id="main-view">
+        <h1 id="main-title">هتحبيني ولا لا</h1>
+        <div class="image-container">
+            <img src="img/1.jpg" id="main-image" alt="Image 1">
+        </div>
+        <div class="buttons-container" id="buttons-area">
+            <button id="btn-yes">هحبك اوي</button>
+            <button id="btn-no">لا</button>
+        </div>
+    </div>
+
+    <!-- Popup -->
+    <div class="popup-overlay" id="popup">
+        <div class="popup-content">
+            <h2 id="popup-title">انا مستني تدوسي هحبك</h2>
+            <img src="img/2.jpg" id="popup-image" alt="Popup Image">
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": ["#ff7675", "#fd79a8", "#fab1a0"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.6, "random": true },
+                "size": { "value": 15, "random": true },
+                "line_linked": { "enable": false },
+                "move": { "enable": true, "speed": 2, "direction": "top", "out_mode": "out" }
+            },
+            "interactivity": {
+                "events": {
+                    "onhover": { "enable": true, "mode": "bubble" },
+                    "onclick": { "enable": true, "mode": "repulse" }
+                },
+                "modes": {
+                    "bubble": { "distance": 250, "size": 20, "duration": 2, "opacity": 1 },
+                    "repulse": { "distance": 400, "duration": 0.4 }
+                }
+            }
+        });
+
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+        const mainTitle = document.getElementById('main-title');
+        const mainImage = document.getElementById('main-image');
+        const buttonsArea = document.getElementById('buttons-area');
+        const mainContainer = document.getElementById('main-view');
+
+        const popup = document.getElementById('popup');
+        const popupTitle = document.getElementById('popup-title');
+        const popupImage = document.getElementById('popup-image');
+
+        let isMoved = false;
+
+        function moveButton() {
+            const btnWidth = btnNo.offsetWidth;
+            const btnHeight = btnNo.offsetHeight;
+            
+            // Safe zone to prevent pushing button out of window boundaries
+            const safeWidth = window.innerWidth - btnWidth - 40;
+            const safeHeight = window.innerHeight - btnHeight - 40;
+
+            const randomX = Math.max(20, Math.floor(Math.random() * safeWidth));
+            const randomY = Math.max(20, Math.floor(Math.random() * safeHeight));
+
+            btnNo.style.position = 'fixed';
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+            
+            if(!isMoved) {
+                // Adjust buttons area to space properly when "No" goes fixed
+                buttonsArea.style.justifyContent = 'center';
+                isMoved = true;
+            }
+        }
+
+        btnNo.addEventListener('mouseover', moveButton);
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault(); 
+            moveButton();
+        });
+
+        // Setup popups
+        let popupStage = 1;
+        let popupTimer;
+        let success = false;
+
+        function showPopup() {
+            if (success) return; 
+
+            if (popupStage === 1) {
+                popupTitle.innerText = "انا مستني تدوسي هحبك";
+                popupImage.src = "img/2.jpg";
+                popupStage = 2; 
+            } else {
+                popupTitle.innerText = "ما تقولي هحبك بقا";
+                popupImage.src = "img/3.png";
+            }
+
+            popup.classList.add('active');
+
+            setTimeout(() => {
+                popup.classList.remove('active');
+                if (!success) {
+                    startPopupTimer();
+                }
+            }, 3000); 
+        }
+
+        function startPopupTimer() {
+            clearTimeout(popupTimer);
+            popupTimer = setTimeout(() => {
+                if (!success) showPopup();
+            }, 5000); 
+        }
+
+        window.addEventListener('load', () => {
+            startPopupTimer();
+        });
+
+        // Click on "Yes"
+        btnYes.addEventListener('click', () => {
+            success = true;
+            clearTimeout(popupTimer);
+            
+            buttonsArea.style.display = 'none';
+            btnNo.style.display = 'none'; 
+            
+            mainTitle.innerText = "مراتي وحبيبتي يعم والله ❤️";
+            mainImage.src = "img/4.jpg";
+
+            mainContainer.style.transform = 'scale(1.1)';
+            mainContainer.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.2)';
+            
+            // Reload particles for celebration
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 100 },
+                    "color": { "value": ["#ff7675", "#fd79a8", "#d63031"] },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.8 },
+                    "size": { "value": 15, "random": true },
+                    "move": { "enable": true, "speed": 5, "direction": "top" }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
